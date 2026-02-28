@@ -122,7 +122,7 @@
 
 ### For Users:
 
-1. Download The Latest Installer From The [Releases](https://github.com/Kyle8973/Tritone/releases) Page
+1. Download The Latest Installer For Your Specific Operating System From The [Releases](https://github.com/Kyle8973/Tritone/releases) Page
 
 2. Run The Installer And Follow The Wizard
 
@@ -170,4 +170,5 @@ This Project Is Licensed Under The **MIT [License](https://github.com/Kyle8973/T
 ----------
 
 ## 🤝 Support
+
 Found A Bug Or Have A Suggestion? Open An Issue [Here](https://github.com/Kyle8973/Tritone)
