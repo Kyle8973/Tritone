@@ -122,7 +122,7 @@
 
 ### For Users:
 
-1. Download The Latest `.exe` Installer From The [Releases](https://github.com/Kyle8973/Tritone/releases) Page
+1. Download The Latest Installer From The [Releases](https://github.com/Kyle8973/Tritone/releases) Page
 
 2. Run The Installer And Follow The Wizard
 

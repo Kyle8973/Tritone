@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <!-- Styleshet -->
-     <link rel="stylesheet" href="assets/styles/styles.css"> 
+    <link rel="stylesheet" href="assets/styles/styles.css">
 </head>
 
 <body>
@@ -25,33 +26,44 @@
 
     <div id="setup-overlay">
         <div class="setup-card">
-            <img src="assets/images/logo.svg" alt="Tritone Logo" style="width: 200px; margin-bottom: 20px; opacity: 0.8;">
+            <img src="assets/images/logo.svg" alt="Tritone Logo"
+                style="width: 200px; margin-bottom: 20px; opacity: 0.8;">
             <h1 style="margin-bottom: 10px;">Welcome To Tritone 😈</h1>
             <h2 style="margin-bottom: 25px;">Connect To Server</h2>
             <input type="text" id="setup-url" placeholder="Server URL">
             <input type="text" id="setup-user" placeholder="Username">
             <input type="password" id="setup-pass" placeholder="Password">
             <button onclick="saveConnection()">Save & Connect</button>
-            <small><br><br>Need Support? <a href="https://github.com/Kyle8973/Tritone" target="_blank">Visit Our GitHub</a></small>
+            <small><br><br>Need Support? <a href="https://github.com/Kyle8973/Tritone" target="_blank">Visit Our
+                    GitHub</a></small>
             <p id="setup-error" style="color: #ff4444; font-size: 13px; margin-top: 15px; display: none;"></p>
         </div>
     </div>
 
-    <div id="playlist-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
-        <div style="background: #111; padding: 30px; border-radius: 15px; width: 350px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+    <div id="playlist-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+        <div
+            style="background: #111; padding: 30px; border-radius: 15px; width: 350px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
             <h3>Add to Playlist</h3>
-            <div id="playlist-modal-list" style="max-height: 200px; overflow-y: auto; margin: 20px 0; text-align: left;"></div>
-            <button onclick="closePlaylistModal()" style="padding: 10px 20px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+            <div id="playlist-modal-list"
+                style="max-height: 200px; overflow-y: auto; margin: 20px 0; text-align: left;"></div>
+            <button onclick="closePlaylistModal()"
+                style="padding: 10px 20px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
         </div>
     </div>
 
-    <div id="create-playlist-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
-        <div style="background: #111; padding: 30px; border-radius: 15px; width: 350px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+    <div id="create-playlist-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+        <div
+            style="background: #111; padding: 30px; border-radius: 15px; width: 350px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
             <h3>Create Playlist</h3>
-            <input type="text" id="new-playlist-name" placeholder="Playlist Name..." style="width: 100%; padding: 12px; margin: 20px 0; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; box-sizing: border-box; outline: none;">
+            <input type="text" id="new-playlist-name" placeholder="Playlist Name..."
+                style="width: 100%; padding: 12px; margin: 20px 0; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; box-sizing: border-box; outline: none;">
             <div style="display: flex; gap: 10px;">
-                <button onclick="closeCreatePlaylistModal()" style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
-                <button onclick="submitNewPlaylist()" style="flex: 1; padding: 10px; background: var(--accent); color: black; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">Create</button>
+                <button onclick="closeCreatePlaylistModal()"
+                    style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+                <button onclick="submitNewPlaylist()"
+                    style="flex: 1; padding: 10px; background: var(--accent); color: black; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">Create</button>
             </div>
         </div>
     </div>
@@ -73,9 +85,12 @@
             <div class="search-container"><input type="text" id="library-search" placeholder="Search Server..."></div>
             <div id="sidebar-content-scroll">
                 <div id="album-list"></div>
-                <div class="sidebar-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: center;">
+                <div class="sidebar-header"
+                    style="padding-top: 0; display: flex; justify-content: space-between; align-items: center;">
                     <h2>Playlists</h2>
-                    <button onclick="createNewPlaylist()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer; margin-right: 15px;" title="New Playlist">➕</button>
+                    <button onclick="createNewPlaylist()"
+                        style="background:none; border:none; color:white; font-size:20px; cursor:pointer; margin-right: 15px;"
+                        title="New Playlist">➕</button>
                 </div>
                 <div id="playlist-list"></div>
             </div>
@@ -87,52 +102,82 @@
                 <button id="back-btn" onclick="goBack()" title="Go Back">←</button>
             </div>
 
-            <div id="settings-view" style="display: none; background: rgba(18, 18, 18, 0.4); animation: fadeIn 0.4s ease-out;">
-                <h1 style="font-size: 48px; margin-bottom: 40px;">Settings</h1>
-                
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <h3>Storage & Cache</h3>
-                    <p style="opacity: 0.6; font-size: 14px;">Clear cached biographies, images, and recently played history.</p>
-                    <button onclick="clearCache()" style="padding: 10px 20px; background: #ff5f5f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Clear Cache</button>
-                </div>
+<div id="settings-view" style="display: none; background: rgba(18, 18, 18, 0.4); animation: fadeIn 0.4s ease-out;">
+    <h1 style="font-size: 48px; margin-bottom: 40px;">Settings</h1>
 
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <h3>Audio Quality</h3>
-                    <p style="opacity: 0.6; font-size: 14px;">Set maximum streaming bitrate for playback.</p>
-                    <select id="bitrate-select" onchange="saveBitrate()" style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;">
-                        <option value="0">Original (No Limit)</option>
-                        <option value="320">320 kbps</option>
-                        <option value="192">192 kbps</option>
-                        <option value="128">128 kbps</option>
-                    </select>
-                </div>
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3>Storage & Cache</h3>
+        <p style="opacity: 0.6; font-size: 14px;">Clear cached biographies, images, and recently played history.</p>
+        <button onclick="clearCache()"
+            style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold;">
+            Clear Cache
+        </button>
+    </div>
 
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <h3>Discord Rich Presence</h3>
-                    <p style="opacity: 0.6; font-size: 14px;">Show what you're listening to on Discord.</p>
-                    <button id="rpc-toggle-btn" onclick="toggleRPCSetting()" style="padding: 10px 20px; background: var(--accent); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Disable RPC</button>
-                </div>
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3>Audio Quality</h3>
+        <p style="opacity: 0.6; font-size: 14px;">Set maximum streaming bitrate for playback.</p>
+        <select id="bitrate-select" onchange="saveBitrate()"
+            style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;">
+            <option value="0">Original (No Limit)</option>
+            <option value="320">320 kbps</option>
+            <option value="192">192 kbps</option>
+            <option value="128">128 kbps</option>
+        </select>
+    </div>
 
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <h3>Desktop Notifications</h3>
-                    <p style="opacity: 0.6; font-size: 14px;">Show a notification when a new song starts playing.</p>
-                    <button id="notif-toggle-btn" onclick="toggleNotifSetting()" style="padding: 10px 20px; background: var(--accent); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Disable Notifications</button>
-                </div>
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3>Discord Rich Presence</h3>
+        <p style="opacity: 0.6; font-size: 14px;">Show what you're listening to on Discord.</p>
+        <button id="rpc-toggle-btn" onclick="toggleRPCSetting()"
+            style="padding: 10px 20px; background: var(--accent); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+            Disable RPC
+        </button>
+    </div>
 
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <h3>Server Connection</h3>
-                    <p style="opacity: 0.6; font-size: 14px;">Sign out to connect to a different Subsonic server.</p>
-                    <button onclick="logout()" style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold;">Sign Out</button>
-                </div>
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3>Desktop Notifications</h3>
+        <p style="opacity: 0.6; font-size: 14px;">Show a notification when a new song starts playing.</p>
+        <button id="notif-toggle-btn" onclick="toggleNotifSetting()"
+            style="padding: 10px 20px; background: var(--accent); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+            Disable Notifications
+        </button>
+    </div>
 
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
-                    <h3>Tritone Support</h3>
-                    <p style="opacity: 0.6; font-size: 14px;">Need help? Visit the Tritone GitHub repository.</p>
-                    <button onclick="shell.openExternal('https://github.com/Kyle8973/Tritone')" style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold;">View GitHub</button>
-                </div>
-            </div>
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3>Window Behavior</h3>
+        <p style="opacity: 0.6; font-size: 14px;">Keep Tritone playing in the system tray when the window is closed.</p>
+        <button id="close-tray-btn" onclick="toggleCloseToTray()"
+            style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold;">
+            Enable Close To Tray
+        </button>
+    </div>
 
-            <div id="search-view" style="display: none; background: rgba(18, 18, 18, 0.4); animation: fadeIn 0.4s ease-out;">
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3>Server Connection</h3>
+        <p style="opacity: 0.6; font-size: 14px;">Sign out to connect to a different Subsonic server.</p>
+        <button onclick="logout()"
+            style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold;">
+            Sign Out
+        </button>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+        <h3>Tritone Support</h3>
+        <p style="opacity: 0.6; font-size: 14px;">Need help? Visit the Tritone GitHub repository.</p>
+        <button onclick="shell.openExternal('https://github.com/Kyle8973/Tritone')"
+            style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold;">
+            View GitHub
+        </button>
+    </div>
+
+    <div style="margin-top: auto; padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+        <span id="version-display" style="opacity: 0.4; font-size: 11px; letter-spacing: 1px;"></span>
+    </div>
+</div>
+
+            <div id="search-view"
+                style="display: none; background: rgba(18, 18, 18, 0.4); animation: fadeIn 0.4s ease-out;">
                 <h1>Search Results</h1>
                 <div id="search-top-result" style="margin-bottom: 40px;"></div>
                 <h2 style="color: white; display: none;" id="search-songs-title">Songs</h2>
@@ -155,10 +200,15 @@
                     <img id="view-album-art" src="">
                     <div class="album-info-box">
                         <h1 id="view-album-title"></h1>
-                        <p id="view-album-artist" style="opacity:0.7; font-size: 24px; margin: 10px 0; cursor: pointer;" onclick="searchArtist(this.innerText)"></p>
+                        <p id="view-album-artist" style="opacity:0.7; font-size: 24px; margin: 10px 0; cursor: pointer;"
+                            onclick="searchArtist(this.innerText)"></p>
                         <div style="display: flex; gap: 15px; margin-top: 20px;">
-                            <button id="shuffleBtn" onclick="toggleShuffle()" style="background:white; color:black; border:none; padding:12px 30px; border-radius:30px; cursor:pointer; font-weight: 800;">Shuffle</button>
-                            <button id="downloadAlbumBtn" style="display:none; background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2); padding:12px 30px; border-radius:30px; cursor:pointer; font-weight: 800; transition:0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Download Album</button>
+                            <button id="shuffleBtn" onclick="toggleShuffle()"
+                                style="background:white; color:black; border:none; padding:12px 30px; border-radius:30px; cursor:pointer; font-weight: 800;">Shuffle</button>
+                            <button id="downloadAlbumBtn"
+                                style="display:none; background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2); padding:12px 30px; border-radius:30px; cursor:pointer; font-weight: 800; transition:0.2s;"
+                                onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+                                onmouseout="this.style.background='rgba(255,255,255,0.1)'">Download Album</button>
                         </div>
                     </div>
                 </div>
@@ -173,7 +223,8 @@
                         <p id="artist-stats" style="opacity:0.6; margin:15px 0; font-weight:bold;"></p>
                     </div>
                 </div>
-                <div id="artist-bio-container" style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; margin-bottom: 40px; line-height: 1.6; font-size: 15px; opacity: 0.9; max-width: 800px; display: none;">
+                <div id="artist-bio-container"
+                    style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; margin-bottom: 40px; line-height: 1.6; font-size: 15px; opacity: 0.9; max-width: 800px; display: none;">
                     <h3 style="margin-top: 0; color: white;">About</h3>
                     <div id="artist-bio-text"></div>
                     <button id="bio-toggle-btn" onclick="toggleBio()">Read More</button>
@@ -184,7 +235,7 @@
                 </div>
                 <h2>Albums</h2>
                 <div id="artist-albums-grid" class="alphabetical-grid"></div>
-                
+
                 <div id="artist-similar-container" style="margin-top: 50px; margin-bottom: 40px; display: none;">
                     <h2 style="color: white;">Similar Artists</h2>
                     <div id="artist-similar-grid" class="alphabetical-grid"></div>
@@ -205,7 +256,8 @@
             <div id="queue-view">
                 <div class="queue-header">
                     <span>Up Next</span>
-                    <button onclick="toggleQueue()" style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+                    <button onclick="toggleQueue()"
+                        style="background:none; border:none; color:white; cursor:pointer;">✕</button>
                 </div>
                 <div id="queue-list"></div>
             </div>
@@ -223,7 +275,8 @@
                             <div id="mini-title">Tritone</div>
                             <button id="starBtn" onclick="toggleStar()" title="Favorite"></button>
                         </div>
-                        <div id="mini-artist"><a href="https://github.com/Kyle8973/Tritone" target="_blank">By Kyle8973</a></div>
+                        <div id="mini-artist"><a href="https://github.com/Kyle8973/Tritone" target="_blank">By
+                                Kyle8973</a></div>
                         <div id="mini-album"></div>
                     </div>
                 </div>
@@ -255,4 +308,5 @@
     </div>
     <script src="renderer.js"></script>
 </body>
+
 </html>

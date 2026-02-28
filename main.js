@@ -1,15 +1,33 @@
-const { app, BrowserWindow, globalShortcut, ipcMain, Notification, safeStorage, Tray, Menu, nativeImage } = require('electron');
+const { app, BrowserWindow, globalShortcut, ipcMain, Notification, safeStorage, Tray, Menu, nativeImage, net } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
+// --- Global State Variables ---
+let win; // This is the variable we must use everywhere
+let tray = null;
+let rpc = null;
+let rpcReady = false;
+let notificationTimeout = null;
+let normalBounds = { width: 1200, height: 800 };
+
+// NEW: These track the "Close to Tray" logic
+let isQuitting = false; 
+let closeToTrayEnabled = false; // Off by default until setting is toggled
+
+// IPC listener to get app version
+ipcMain.handle('get-app-version', () => {
+    const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
+    return packageJson.version;
+});
+
+// FIXED: Required for Windows Notifications to show
 if (process.platform === 'win32') {
-    app.setAppUserModelId("Tritone");
+    app.setAppUserModelId("com.kyle8973.tritone");
 }
 
-let DiscordRPC;
-let rpcReady = false;
-let rpc = null;
+// --- Discord RPC Initialization ---
 try {
-    DiscordRPC = require('discord-rpc');
+    const DiscordRPC = require('discord-rpc');
     const clientId = '1476307678795010211'; 
     DiscordRPC.register(clientId);
     rpc = new DiscordRPC.Client({ transport: 'ipc' });
@@ -18,10 +36,6 @@ try {
 } catch (e) {
     console.log('discord-rpc not installed. Skipping Discord integration.');
 }
-
-let win;
-let tray = null;
-let normalBounds = { width: 1200, height: 800 }; 
 
 function createWindow() {
   win = new BrowserWindow({
@@ -40,6 +54,15 @@ function createWindow() {
 
     win.loadFile('index.html');
 
+    // Handle the "X" button click correctly
+    win.on('close', (event) => {
+        if (!isQuitting && closeToTrayEnabled) {
+            event.preventDefault();
+            win.hide();
+            return false;
+        }
+    });
+
     win.webContents.session.on('will-download', (event, item, webContents) => {
         if (global.downloadFilename) {
             item.setSaveDialogOptions({ defaultPath: global.downloadFilename });
@@ -54,9 +77,9 @@ function createWindow() {
 
     try {
         win.setThumbarButtons([
-            { tooltip: 'Previous', icon: path.join(__dirname, 'assets/images', 'prev.png'), click() { win.webContents.send('media-prev'); } },
-            { tooltip: 'Play/Pause', icon: path.join(__dirname, 'assets/images', 'play.png'), click() { win.webContents.send('media-play-pause'); } },
-            { tooltip: 'Next', icon: path.join(__dirname, 'assets/images', 'next.png'), click() { win.webContents.send('media-next'); } }
+            { tooltip: 'Previous', icon: path.join(__dirname, 'assets', 'images', 'prev.png'), click() { win.webContents.send('media-prev'); } },
+            { tooltip: 'Play/Pause', icon: path.join(__dirname, 'assets', 'images', 'play.png'), click() { win.webContents.send('media-play-pause'); } },
+            { tooltip: 'Next', icon: path.join(__dirname, 'assets', 'images', 'next.png'), click() { win.webContents.send('media-next'); } }
         ]);
     } catch (e) { }
 
@@ -66,44 +89,67 @@ function createWindow() {
 }
 
 function createTray() {
-    try {
-        tray = new Tray(path.join(__dirname, 'assets/images', 'icon.ico')); 
-    } catch (e) {
-        const { nativeImage } = require('electron');
-        tray = new Tray(nativeImage.createEmpty()); 
+    // FIXED: Standardized path.join with commas for Linux compatibility
+    const iconPath = process.platform === 'win32' 
+        ? path.join(__dirname, 'assets', 'images', 'icon.ico') 
+        : path.join(__dirname, 'assets', 'images', 'tritone_logo.png');
+
+    const image = nativeImage.createFromPath(iconPath);
+    
+    if (image.isEmpty()) {
+        console.error("Tritone Error: Tray icon not found at:", iconPath);
     }
-    
+
+    image.setTemplateImage(true);
+
+    tray = new Tray(image);
+
+    // FIXED: Changed 'mainWindow' to 'win' and added safety checks
     const contextMenu = Menu.buildFromTemplate([
-        { label: 'Play/Pause', click: () => win.webContents.send('media-play-pause') },
-        { label: 'Next Track', click: () => win.webContents.send('media-next') },
-        { label: 'Previous Track', click: () => win.webContents.send('media-prev') },
+        { label: 'Play/Pause', click: () => { if(win) win.webContents.send('media-play-pause') } },
+        { label: 'Next Track', click: () => { if(win) win.webContents.send('media-next') } },
+        { label: 'Previous Track', click: () => { if(win) win.webContents.send('media-prev') } },
         { type: 'separator' },
-        { label: 'Show Tritone', click: () => win.show() },
-        { label: 'Quit Tritone', click: () => { app.isQuitting = true; app.quit(); } }
+        { label: 'Show Tritone', click: () => { if(win) win.show() } },
+        { label: 'Quit Tritone', click: () => { 
+            isQuitting = true; 
+            app.quit(); 
+        } }
     ]);
-    
-    tray.setToolTip('Tritone Player');
-    tray.setContextMenu(contextMenu);
-    
-    tray.on('click', () => win.show());
+
+    if (tray) {
+        tray.setToolTip('Tritone Player');
+        tray.setContextMenu(contextMenu);
+        tray.on('click', () => { if(win) win.show() });
+    }
 }
 
-ipcMain.on('window-min', () => win.minimize());
+// NEW: This receives the toggle status from your Settings UI
+ipcMain.on('update-close-behavior', (event, value) => {
+    closeToTrayEnabled = value;
+});
+
+ipcMain.on('window-min', () => { if(win) win.minimize() });
 ipcMain.on('window-max', () => {
+    if (!win) return;
     if (win.isMaximized()) win.unmaximize();
     else win.maximize();
 });
+
+// FIXED: Use the correct internal close region
 ipcMain.on('window-close', () => {
-    if (!app.isQuitting) {
+    if (!win) return;
+    if (!isQuitting && closeToTrayEnabled) {
         win.hide();
     } else {
+        isQuitting = true;
         win.close();
     }
 });
 
 ipcMain.on('download-track', (event, { url, filename }) => {
     global.downloadFilename = filename;
-    win.webContents.downloadURL(url);
+    if(win) win.webContents.downloadURL(url);
 });
 
 ipcMain.on('update-rpc', (event, { title, artist, album, duration, currentTime, isPaused, clear }) => {
@@ -119,12 +165,12 @@ ipcMain.on('update-rpc', (event, { title, artist, album, duration, currentTime, 
     const endTimestamp = startTimestamp + Math.round(duration); 
 
     rpc.setActivity({
-        details: title,
-        state: `${artist} • ${album || "Unknown Album"}`,
+        details: `🎵 ${title}`, 
+        state: `👤 ${artist} • 💿 ${album || "Single"}`, 
         startTimestamp: startTimestamp, 
         endTimestamp: endTimestamp, 
         largeImageKey: 'tritone_logo',
-        largeImageText: "Tritone",
+        largeImageText: `Tritone Player By Kyle8973`, 
         type: 2, 
         instance: false,
         buttons: [
@@ -157,20 +203,46 @@ ipcMain.handle('decrypt-data', (event, encryptedData) => {
     }
 });
 
-ipcMain.on('notify', (event, { title, body, iconDataUrl }) => {
-    let icon;
-    if (iconDataUrl) {
-        icon = nativeImage.createFromDataURL(iconDataUrl);
-    }
-    
-    new Notification({ 
-        title: `Now Playing: ${title}`, 
-        body: body, 
-        icon: icon, 
-        silent: true 
-    }).show();
+ipcMain.on('notify', async (event, { title, body, iconDataUrl }) => {
+    if (notificationTimeout) clearTimeout(notificationTimeout);
 
-    if (tray) tray.setToolTip(`Playing: ${title} - ${body}`);
+    notificationTimeout = setTimeout(async () => {
+        const appLogoPath = path.join(__dirname, 'assets', 'images', 'icon.png');
+        let displayIcon = nativeImage.createFromPath(appLogoPath);
+
+        if (iconDataUrl) {
+            try {
+                const response = await net.fetch(iconDataUrl);
+                const buffer = await response.arrayBuffer();
+                let img = nativeImage.createFromBuffer(Buffer.from(buffer));
+                
+                const size = img.getSize();
+                const minDim = Math.min(size.width, size.height);
+                img = img.crop({
+                    x: Math.floor((size.width - minDim) / 2),
+                    y: Math.floor((size.height - minDim) / 2),
+                    width: minDim,
+                    height: minDim
+                });
+
+                displayIcon = img.resize({ width: 256, height: 256, quality: 'best' });
+            } catch (e) {
+                console.error("❌ Failed to fetch album art:", e);
+            }
+        }
+        
+        const notif = new Notification({ 
+            title: `Now Playing: ${title}`, 
+            body: body, 
+            icon: displayIcon, 
+            appIcon: nativeImage.createFromPath(appLogoPath), 
+            silent: true 
+        });
+
+        notif.show();
+        if (tray) tray.setToolTip(`Playing: ${title} - ${body}`);
+        notificationTimeout = null; 
+    }, 1500); 
 });
 
 ipcMain.on('force-focus', (event) => {

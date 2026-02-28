@@ -1,12 +1,16 @@
 {
   "name": "tritone",
   "productName": "Tritone",
-  "version": "1.0.0",
+  "homepage": "https://github.com/Kyle8973/Tritone",
+  "version": "1.1.0",
   "description": "The Devil's Subsonic Player",
   "main": "main.js",
+  "author": "Kyle8973",
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder",
+    "dist:linux": "electron-builder --linux",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
@@ -17,8 +21,6 @@
     "electron",
     "tritone"
   ],
-  "author": "Kyle8973",
-  "license": "ISC",
   "dependencies": {
     "colorthief": "^2.4.0",
     "crypto-js": "^4.2.0",
@@ -35,13 +37,33 @@
     "@electron-forge/plugin-fuses": "^7.11.1",
     "@electron/fuses": "^1.8.0",
     "electron": "^31.7.7",
-    "electron-builder": "^26.8.1"
+    "electron-builder": "^26.8.1",
+    "eslint": "^10.0.2",
+    "eslint-plugin-sonarjs": "^4.0.0",
+    "jscpd": "^4.0.8"
   },
   "build": {
     "appId": "com.kyle8973.tritone",
     "productName": "Tritone",
+    "copyright": "Copyright © 2026 Kyle8973",
     "directories": {
+      "buildResources": "build",
       "output": "dist"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "AppImage"
+      ],
+      "category": "AudioVideo",
+      "executableName": "Tritone",
+      "synopsis": "A high-fidelity Subsonic music player.",
+      "maintainer": "Kyle8973 <38794622+Kyle8973@users.noreply.github.com>"
+    },
+    "deb": {
+      "priority": "optional",
+      "afterInstall": "build/after-install.sh"
     },
     "win": {
       "target": "nsis",
