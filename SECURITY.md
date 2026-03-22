@@ -110,18 +110,10 @@ If you encounter any of the following:
   
 Please report it.  
   
-### How to Report  
+### How to Report    
   
-1. Open an issue in this repository   
-2. Provide as much detail as possible:  
- - Link to the suspicious repository or file   
- - File name and hash (if available)   
- - Observed behaviour   
- - Screenshots or logs (if applicable)   
-  
-If the issue involves potentially malicious content, avoid executing the file outside of a controlled environment.  
-
-**You can also report issues to [security@tritone.dev](mailto:security@tritone.dev)**
+**Please report security issues to [security@tritone.dev](mailto:security@tritone.dev)**
+> If the issue involves potentially malicious content, avoid executing the file outside of a controlled environment.  
   
 ---  
   
