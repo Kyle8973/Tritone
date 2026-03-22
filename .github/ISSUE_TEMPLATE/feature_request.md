@@ -1,20 +1,17 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
+name: "\U0001F680 Feature Request"
+about: Suggest An Idea For Tritone
+title: "[Feature] - "
+labels: enhancement
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## 💡 New Feature:
+A clear and concise description of the feature you wish to see implemented.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+## 🖼️ Mockups or Visuals:
+If applicable, add screenshots or sketches to help explain your idea.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
+## 📜 Additional Context:
 Add any other context or screenshots about the feature request here.
