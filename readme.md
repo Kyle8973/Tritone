@@ -156,10 +156,6 @@ npm  start
 npm  run  dist
 ```
 ----------
-## 🗺 Roadmap
-
-#### Stay Up-To Date With The Development Roadmap [Here](https://github.com/Kyle8973/Tritone/blob/main/roadmap.md)
-----------
 
 ## 📄 License
 This Project Is Licensed Under The **MIT [License](https://github.com/Kyle8973/Tritone/blob/main/LICENSE):**
