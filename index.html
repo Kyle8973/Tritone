@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <link rel="stylesheet" href="assets/styles/styles.css">
+</head>
+
+<body>
+    <header id="custom-titlebar">
+        <div class="drag-region">
+            <div class="app-logo">
+                😈 Tritone | Kyle8973
+            </div>
+            <div class="window-controls">
+                <button onclick="ipcRenderer.send('window-min')" class="control-btn" title="Minimize">🗕</button>
+                <button onclick="ipcRenderer.send('window-max')" class="control-btn" title="Maximize">🗖</button>
+                <button onclick="ipcRenderer.send('window-close')" class="control-btn close" title="Close">🗙</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="toast-container"></div>
+
+    <div id="setup-overlay">
+        <div class="setup-card">
+            <img src="assets/images/logo.svg" alt="Tritone Logo"
+                style="width: 200px; margin-bottom: 20px; opacity: 0.8;">
+            <h1 style="margin-bottom: 10px;">Welcome To Tritone 😈</h1>
+            <h2 style="margin-bottom: 25px;">Connect To Server</h2>
+            <input type="text" id="setup-url" placeholder="Server URL">
+            <input type="text" id="setup-user" placeholder="Username">
+            <input type="password" id="setup-pass" placeholder="Password">
+            <button onclick="saveConnection()">Save & Connect</button>
+            <small><br><br>Need Support? <a href="https://github.com/Kyle8973/Tritone" target="_blank">Visit Our
+                    GitHub</a></small>
+            <p id="setup-error" style="color: #ff4444; font-size: 13px; margin-top: 15px; display: none;"></p>
+        </div>
+    </div>
+
+    <div id="playlist-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+        <div
+            style="background: #111; padding: 30px; border-radius: 15px; width: 350px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+            <h3>Add to Playlist</h3>
+            <div id="playlist-modal-list"
+                style="max-height: 200px; overflow-y: auto; margin: 20px 0; text-align: left;"></div>
+            <button onclick="closePlaylistModal()"
+                style="padding: 10px 20px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+        </div>
+    </div>
+
+    <div id="create-playlist-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+        <div
+            style="background: #111; padding: 30px; border-radius: 15px; width: 350px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+            <h3>Create Playlist</h3>
+            <input type="text" id="new-playlist-name" placeholder="Playlist Name..."
+                style="width: 100%; padding: 12px; margin: 20px 0; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; box-sizing: border-box; outline: none;">
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeCreatePlaylistModal()"
+                    style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+                <button onclick="submitNewPlaylist()"
+                    style="flex: 1; padding: 10px; background: var(--accent); color: black; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-body">
+        <div id="collapsed-nav-bar">
+            <button class="floating-btn" onclick="toggleSidebar()" title="Expand Sidebar">☰</button>
+            <button class="floating-btn" onclick="showGridView()" title="Home">🏠</button>
+        </div>
+
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <h2>Tritone 😈</h2>
+                <div class="nav-group">
+                    <button class="nav-btn" onclick="showGridView()" title="Home">🏠</button>
+                    <button class="nav-btn" onclick="toggleSidebar()" title="Collapse Sidebar">☰</button>
+                </div>
+            </div>
+            <div class="search-container"><input type="text" id="library-search" placeholder="Search Server..."></div>
+            <div id="sidebar-content-scroll">
+                <div id="playlist-section-wrapper">
+                    <div class="sidebar-header"
+                        style="padding-top: 0; display: flex; justify-content: space-between; align-items: center;">
+                        <h2>Playlists</h2>
+                        <button onclick="createNewPlaylist()"
+                            style="background:none; border:none; color:white; font-size:20px; cursor:pointer; margin-right: 15px;"
+                            title="New Playlist">➕</button>
+                    </div>
+                    <div id="playlist-list"></div>
+                </div>
+            </div>
+            <div class="logout-btn" onclick="showSettings()">⚙ Settings</div>
+        </div>
+
+        <div id="main">
+            <div id="top-nav-bar">
+                <button id="back-btn" onclick="goBack()" title="Go Back">←</button>
+            </div>
+
+            <div id="settings-view"
+                style="display: none; background: rgba(18, 18, 18, 0.4); animation: fadeIn 0.4s ease-out;">
+                <h1 style="font-size: 48px; margin-bottom: 40px;">Settings</h1>
+
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <h3>Storage & Cache</h3>
+                    <p style="opacity: 0.6; font-size: 14px; margin-bottom: 15px;">Clear cached biographies, images, and
+                        history.</p>
+                    <button onclick="clearCache()" class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">Clear
+                        Cache</button>
+                </div>
+
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <h3>Library Performance</h3>
+                    <div style="margin-bottom:20px;">
+                        <label>Image Quality:</label><br>
+                        <select id="img-res-select"
+                            style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; width: 100%;">
+                            <option value="0">Original (May Result In Slightly Higher RAM Usage)</option>
+                            <option value="600">600px (Balanced)</option>
+                            <option value="300">300px (Lower RAM Usage)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="savePerformanceSettings()" class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.3s ease;">
+                        Save Image Quality Setting
+                    </button>
+                </div>
+
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <h3>Audio Quality</h3>
+                    <div style="margin-bottom:15px;">
+                        <select id="bitrate-select"
+                            style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; width: 100%;">
+                            <option value="0">Original (No Limit)</option>
+                            <option value="320">320 kbps</option>
+                            <option value="192">192 kbps</option>
+                            <option value="128">128 kbps</option>
+                        </select>
+                    </div>
+                    <button onclick="saveBitrate()" class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.3s ease;">
+                        Save Bitrate Preference
+                    </button>
+                </div>
+
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <h3>Discord Rich Presence</h3>
+                    <button id="rpc-toggle-btn" onclick="toggleRPCSetting()" class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">Enable
+                        RPC</button>
+                </div>
+
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <h3>Desktop Notifications</h3>
+                    <button id="notif-toggle-btn" onclick="toggleNotifSetting()" class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">Enable
+                        Notifications</button>
+                </div>
+
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <h3>Window Behavior</h3>
+                    <button id="close-tray-btn" onclick="toggleCloseToTray()" class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">Enable
+                        Close To Tray</button>
+                </div>
+
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <h3>Server Connection</h3>
+                    <button onclick="logout()" class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">Sign
+                        Out</button>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                    <h3>Tritone Support</h3>
+                    <button onclick="shell.openExternal('https://github.com/Kyle8973/Tritone')"
+                        class="dynamic-accent-bg"
+                        style="padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">View
+                        GitHub</button>
+                </div>
+
+                <div
+                    style="margin-top: auto; padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <span id="version-display" style="opacity: 0.4; font-size: 11px; letter-spacing: 1px;"></span>
+                </div>
+            </div>
+
+            <div id="search-view"
+                style="display: none; background: rgba(18, 18, 18, 0.4); animation: fadeIn 0.4s ease-out;">
+                <h1>Search Results</h1>
+                <div id="search-top-result" style="margin-bottom: 40px;"></div>
+                <h2 style="color: white; display: none;" id="search-songs-title">Songs</h2>
+                <div id="search-songs-list" style="margin-bottom: 40px;"></div>
+                <h2 style="color: white; display: none;" id="search-albums-title">Albums</h2>
+                <div id="search-albums-grid" class="alphabetical-grid"></div>
+            </div>
+
+            <div id="library-grid-view">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <h1>Your Library</h1>
+                        <select id="library-sort" onchange="changeLibrarySort(this.value)"
+                            style="padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; cursor: pointer; outline: none;">
+                            <option value="newest">Recently Added</option>
+                            <option value="alphabeticalByName">Album Name (A-Z)</option>
+                            <option value="alphabeticalByArtist">Artist Name (A-Z)</option>
+                            <option value="random">Random Mix</option>
+                        </select>
+                    </div>
+                    <input type="text" id="grid-search" placeholder="Search Server..."
+                        style="padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; width: 250px;">
+                </div>
+                <div id="alphabetical-grid" class="alphabetical-grid"></div>
+                <div id="alphabetical-sidebar"
+                    style="position: fixed; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; z-index: 100; background: rgba(0,0,0,0.4); padding: 12px 6px; border-radius: 20px; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); max-height: 85vh; overflow-y: auto; scrollbar-width: none; box-shadow: -5px 0 15px rgba(0,0,0,0.5);">
+                </div>
+                <div id="grid-spinner"
+                    style="display: none; text-align: center; padding: 40px; color: var(--accent); font-weight: bold; letter-spacing: 1px;">
+                    <span style="font-size: 24px;">⌛</span>
+                </div>
+            </div>
+
+            <div id="album-view">
+                <div class="album-header">
+                    <img id="view-album-art" src="">
+                    <div class="album-info-box">
+                        <h1 id="view-album-title"></h1>
+                        <p id="view-album-artist" style="opacity:0.7; font-size: 24px; margin: 10px 0; cursor: pointer;"
+                            onclick="searchArtist(this.innerText)"></p>
+                        <div style="display: flex; gap: 15px; margin-top: 20px;">
+                            <button id="shuffleBtn" onclick="toggleShuffle()"
+                                style="background:white; color:black; border:none; padding:12px 30px; border-radius:30px; cursor:pointer; font-weight: 800;">Shuffle</button>
+                            <button id="downloadAlbumBtn"
+                                style="display:none; background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2); padding:12px 30px; border-radius:30px; cursor:pointer; font-weight: 800;">Download
+                                Album</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="track-items" style="margin-top:40px;"></div>
+            </div>
+
+            <div id="artist-view">
+                <div class="artist-header">
+                    <img id="artist-banner" src="">
+                    <div>
+                        <h1 id="artist-name-title" style="font-size:72px; margin:0; line-height:1;"></h1>
+                        <p id="artist-stats" style="opacity:0.6; margin:15px 0; font-weight:bold;"></p>
+                    </div>
+                </div>
+                <div id="artist-bio-container"
+                    style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; margin-bottom: 40px; line-height: 1.6; font-size: 15px; opacity: 0.9; max-width: 800px; display: none;">
+                    <h3 style="margin-top: 0; color: white;">About</h3>
+                    <div id="artist-bio-text"></div>
+                    <button id="bio-toggle-btn" onclick="toggleBio()">Read More</button>
+                </div>
+                <div id="artist-top-tracks-container" style="margin-bottom: 40px; display: none;">
+                    <h2 style="color: white;">Top Tracks</h2>
+                    <div id="artist-top-tracks-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+                </div>
+                <h2>Albums</h2>
+                <div id="artist-albums-grid" class="alphabetical-grid"></div>
+                <div id="artist-similar-container" style="margin-top: 50px; margin-bottom: 40px; display: none;">
+                    <h2 style="color: white;">Similar Artists</h2>
+                    <div id="artist-similar-grid" class="alphabetical-grid"></div>
+                </div>
+            </div>
+
+            <div id="empty-state">
+                <h1>📻</h1>
+                <p>Select An Album To Start Listening</p>
+                <p style="font-size: 14px; margin-top: 40px; opacity: 0.6; line-height: 1.6; text-align: center;">This
+                    Software Is Provided Free Of Charge By Kyle8973<br>Checkout The Project On GitHub:<br><a
+                        href="https://github.com/Kyle8973/Tritone" target="_blank"
+                        style="color: var(--accent); text-decoration: none;">Kyle8973/Tritone</a></p>
+            </div>
+
+            <div id="queue-view">
+                <div class="queue-header">
+                    <span>Up Next</span>
+                    <button onclick="toggleQueue()"
+                        style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+                </div>
+                <div id="queue-list"></div>
+            </div>
+
+            <button class="lyrics-close-btn" id="pinnedCloseBtn" onclick="toggleLyrics()">Close</button>
+            <div id="lyrics-view">
+                <div id="lyrics-content"></div>
+            </div>
+
+            <div id="player-bar">
+                <div class="now-playing-zone">
+                    <img id="mini-art" src="assets/images/logo.svg">
+                    <div class="track-meta">
+                        <div class="title-row">
+                            <div id="mini-title">Tritone</div>
+                            <button id="starBtn" onclick="toggleStar()" title="Favorite"></button>
+                        </div>
+                        <div id="mini-artist">By Kyle8973</div>
+                        <div id="mini-album"></div>
+                    </div>
+                </div>
+                <div class="playback-zone">
+                    <div class="buttons">
+                        <button id="shuffleBarBtn" onclick="toggleShuffle()" title="Shuffle">🔀</button>
+                        <button onclick="playPrev()" title="Previous Track">⏮</button>
+                        <button onclick="seekAudio(-10)" title="Rewind 10s">⏪</button>
+                        <button onclick="togglePlay()" id="playPauseBtn">▶</button>
+                        <button onclick="seekAudio(10)" title="Forward 10s">⏩</button>
+                        <button onclick="playNext()" title="Next Track">⏭</button>
+                        <button id="repeatBtn" onclick="toggleRepeat()" title="Repeat">🔁</button>
+                    </div>
+                    <div class="progress-container">
+                        <small id="current-time">0:00</small>
+                        <input type="range" id="progress-bar" value="0" style="flex: 1;">
+                        <small id="total-time">0:00</small>
+                    </div>
+                </div>
+                <div class="utility-zone">
+                    <div class="utility-btn-group">
+                        <button class="lyric-btn" onclick="toggleQueue()">QUEUE</button>
+                        <button class="lyric-btn" id="lyricToggle" onclick="toggleLyrics()">LYRICS</button>
+                    </div>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1" style="width: 80px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Script load order matters — each module depends on
+         the globals defined in earlier files.
+         ═══════════════════════════════════════════════════════ -->
+    <script src="js/state.js"></script>      <!-- 1. globals & constants -->
+    <script src="js/utils.js"></script>      <!-- 2. pure helpers (showToast, formatDuration…) -->
+    <script src="js/auth.js"></script>       <!-- 3. getAuth, saveConnection, logout -->
+    <script src="js/ui.js"></script>         <!-- 4. views, breadcrumbs, queue panel -->
+    <script src="js/clone.js"></script>      <!-- TEST: remove for production -->
+    <script src="js/library.js"></script>    <!-- 5. VirtualGrid, VirtualList, loadLibrary -->
+    <script src="js/lyrics.js"></script>     <!-- 6. fetchLyrics, parseLRC, handleLyricsSync -->
+    <script src="js/player.js"></script>     <!-- 7. audio engine, playQueue, controls -->
+    <script src="js/playlists.js"></script>  <!-- 8. playlist CRUD + track views -->
+    <script src="js/search.js"></script>     <!-- 9. executeSearch -->
+    <script src="js/artist.js"></script>     <!-- 10. searchArtist, toggleBio -->
+    <script src="js/settings.js"></script>   <!-- 11. settings panel, RPC, notifications -->
+    <script src="js/app.js"></script>        <!-- 12. initApp — entry point (last) -->
+</body>
+
+</html>
