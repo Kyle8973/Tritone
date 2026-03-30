@@ -22,15 +22,6 @@
   <img src="https://img.shields.io/badge/Electron-000000?style=for-the-badge&logo=electron&logoColor=9FEAF9">
 </div>
 
-  
-## 📃Table Of Contents
-- [Tech Stack](https://github.com/Kyle8973/Tritone/edit/main/readme.md#%EF%B8%8F-tech-stack)
-- [Tritone Screenshots](https://github.com/Kyle8973/Tritone/edit/main/readme.md#%EF%B8%8Ftritone-screenshots)
-- [Current Features](https://github.com/Kyle8973/Tritone/edit/main/readme.md#-current-features)
-- [Installation & Setup](https://github.com/Kyle8973/Tritone/edit/main/readme.md#-installation--setup)
-- [Roadmap](https://github.com/Kyle8973/Tritone/edit/main/readme.md#-roadmap)
-- [License](https://github.com/Kyle8973/Tritone/edit/main/readme.md#-license)
-- [Support](https://github.com/Kyle8973/Tritone/edit/main/readme.md#-support)
 ----------
 ## 🛠️ Tech Stack
 
