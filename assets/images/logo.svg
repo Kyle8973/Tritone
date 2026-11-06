@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c0b2b" />
+      <stop offset="100%" stop-color="#0a0310" />
+    </linearGradient>
+
+    <radialGradient id="headGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="70%" stop-color="#6b21a8" />
+      <stop offset="100%" stop-color="#3b0764" />
+    </radialGradient>
+
+    <filter id="neonPurple" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="neonBlue" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="dropShadow" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="-5" dy="10" stdDeviation="15" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+
+    <linearGradient id="sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.15)" />
+      <stop offset="40%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="60%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0.1)" />
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" />
+
+  <g transform="translate(-20, -20)">
+    
+    <path d="M 120 170 C 80 100 100 60 110 50 C 140 80 150 130 170 160 Z" fill="#2e1065" />
+    <path d="M 115 160 Q 145 125 105 100 T 115 55" fill="none" stroke="#60a5fa" stroke-width="5" stroke-linecap="round" filter="url(#neonBlue)" />
+    <path d="M 130 165 Q 160 135 120 110 T 120 70" fill="none" stroke="#a855f7" stroke-width="3" stroke-linecap="round" filter="url(#neonPurple)" />
+
+    <path d="M 320 160 C 340 130 350 80 380 50 C 390 60 410 100 370 170 Z" fill="#2e1065" />
+    <path d="M 375 160 Q 345 125 385 100 T 375 55" fill="none" stroke="#60a5fa" stroke-width="5" stroke-linecap="round" filter="url(#neonBlue)" />
+    <path d="M 360 165 Q 330 135 370 110 T 370 70" fill="none" stroke="#a855f7" stroke-width="3" stroke-linecap="round" filter="url(#neonPurple)" />
+
+    <circle cx="245" cy="260" r="145" fill="url(#headGrad)" />
+
+    <g transform="translate(185, 230)">
+      <circle cx="0" cy="0" r="28" fill="none" stroke="#e879f9" stroke-width="4" filter="url(#neonPurple)" />
+      <circle cx="0" cy="0" r="16" fill="none" stroke="#e879f9" stroke-width="4" filter="url(#neonPurple)" />
+      <circle cx="0" cy="0" r="4" fill="#e879f9" filter="url(#neonPurple)" />
+    </g>
+
+    <g transform="translate(305, 230)">
+      <circle cx="0" cy="0" r="28" fill="none" stroke="#e879f9" stroke-width="4" filter="url(#neonPurple)" />
+      <circle cx="0" cy="0" r="16" fill="none" stroke="#e879f9" stroke-width="4" filter="url(#neonPurple)" />
+      <circle cx="0" cy="0" r="4" fill="#e879f9" filter="url(#neonPurple)" />
+    </g>
+
+    <path d="M 135 180 L 205 200" stroke="#17042b" stroke-width="12" stroke-linecap="round" />
+    <path d="M 355 180 L 285 200" stroke="#17042b" stroke-width="12" stroke-linecap="round" />
+
+    <path d="M 195 320 Q 245 360 305 310" fill="none" stroke="#17042b" stroke-width="10" stroke-linecap="round" />
+  </g>
+
+  <g transform="translate(370, 360)" filter="url(#dropShadow)">
+    <circle cx="0" cy="0" r="115" fill="#0b0b0b" />
+    
+    <circle cx="0" cy="0" r="100" fill="none" stroke="#27272a" stroke-width="2" />
+    <circle cx="0" cy="0" r="85" fill="none" stroke="#18181b" stroke-width="2" />
+    <circle cx="0" cy="0" r="70" fill="none" stroke="#27272a" stroke-width="2" />
+    <circle cx="0" cy="0" r="55" fill="none" stroke="#18181b" stroke-width="2" />
+    
+    <circle cx="0" cy="0" r="115" fill="url(#sheen)" />
+    
+    <circle cx="0" cy="0" r="35" fill="#4c1d95" />
+    <circle cx="0" cy="0" r="8" fill="#0b0b0b" />
+
+    <g transform="translate(-12, -18)" filter="url(#neonPurple)">
+      <circle cx="0" cy="30" r="8" fill="#e879f9" />
+      <path d="M 6 30 L 6 0" fill="none" stroke="#e879f9" stroke-width="4" stroke-linecap="round" />
+      <circle cx="20" cy="25" r="8" fill="#e879f9" />
+      <path d="M 26 25 L 26 -5" fill="none" stroke="#e879f9" stroke-width="4" stroke-linecap="round" />
+      <path d="M 4 -2 L 28 -7 L 28 0 L 4 5 Z" fill="#e879f9" />
+    </g>
+  </g>
+</svg>
